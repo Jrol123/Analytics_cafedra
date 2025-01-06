@@ -1,0 +1,69 @@
+@startuml task1_1
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
+!include DEVICONS/angular.puml
+!include DEVICONS/java.puml
+!include DEVICONS/msql_server.puml
+
+AddElementTag("Физическое лицо", $bgColor="blue", $legendText="Физическое лицо")
+AddElementTag("Внутренние системы/данные", $bgColor="LightBlue", $legendText="Внутренние системы/данные")
+AddElementTag("Внешние системы/данные", $bgColor="LightGray", $legendText="Внешние системы/данные")
+
+AddRelTag("Выходные данные", $lineColor="red")
+
+skinparam dpi 200
+
+' scale 2
+
+LAYOUT_WITH_LEGEND()
+
+' left to right direction
+
+actor :Клиент: as fiz <<Физическое лицо>>
+
+' Точки входа.
+package "1. Заполнение заявки на кредит" as zayav{
+    note "Все системы выдают один вид заявки" as N1
+    System(zayav_bank, "Отделение банка") <<Внутренние системы/данные>>
+    System(zayav_web, "Web-сайт") <<Внутренние системы/данные>>
+    System(zayav_mobile, "Мобильное приложение") <<Внутренние системы/данные>>
+}
+
+package "2. Блок принятия решений" as check{
+    note "Компиляция информации из разных источников" as N2
+    System(check_checker, "Проверяющий отдел")
+    database "Собственные данные" as check_data_pers <<Внутренние системы/данные>>
+    database "Открытые источники" as check_data_abs <<Внешние системы/данные>>
+    database "Данные партнёров" as check_data_partners <<Внешние системы/данные>>
+    database "Бюро кредитных историй" as check_data_bch <<Внешние системы/данные>>
+    check_checker --> check_data_abs
+    check_checker --> check_data_pers
+    check_checker --> check_data_partners
+    check_checker --> check_data_bch
+
+    ' legend right
+    ' note right of check_data_pers : "Собственные данные"
+    ' note below of check_data_abs : АБС
+    ' note below of check_data_partners : Данные партнёров
+    ' note below of bch : Бюро кредитных историй
+    ' end legend
+}
+
+package "3. Аналитический блок" as analyt{
+    note "Обработка информаии из блока 2" as N3
+    System(analyst_fs, "3.1 Оценка кредитных рисков", "Автоматическая оценка от 0 до 99.\n0-30 — отклонение,\n30-70 — дополнительная обработка,\n70-99 — принятие")
+    System(analyst_ss, "3.2 Дополнительный анализ", "Ручная оценка людей, которые получили рейтинг 30-70")
+
+    analyst_fs -> analyst_ss : "Доп проверка"
+    analyst_fs --> analyt<<Выходные данные>> : "Если не требуется доп проверка"
+    analyst_ss --> analyt<<Выходные данные>> : "Результат ручной проверки"
+}
+
+
+fiz --> zayav
+zayav ----> check
+check ----> analyt
+analyt -up--> check<<Выходные данные>> : "Результат анализа"
+check -left-> zayav<<Выходные данные>> : "Выдача уведомления пользователю о статусе его заявки через ту же точку входа, через которую заявка была подана"
+
+@enduml
