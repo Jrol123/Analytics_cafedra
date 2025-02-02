@@ -63,6 +63,24 @@ FROM (
     INNER JOIN products ON total_code.productCode = products.productCode
 ORDER BY total_code.total DESC;
 -- ЗАДАЧА 6
-;
+SELECT e.firstName,
+    e.lastName,
+    c.contactFirstName,
+    c.contactLastName
+FROM employees e
+    LEFT JOIN customers c ON e.employeeNumber = c.salesRepEmployeeNumber
+UNION
+SELECT e.firstName,
+    e.lastName,
+    c.contactFirstName,
+    c.contactLastName
+FROM employees e
+    RIGHT JOIN customers c ON e.employeeNumber = c.salesRepEmployeeNumber;
 -- ЗАДАЧА 7
-;
+SELECT e1.firstName,
+    e1.lastName,
+    e1.jobTitle,
+    e2.firstName AS subFirstName,
+    e2.lastName AS subLastName
+FROM employees as e1
+    LEFT JOIN employees e2 ON e1.employeeNumber = e2.reportsTo;
