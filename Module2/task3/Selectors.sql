@@ -17,6 +17,8 @@ FROM Product
 WHERE type = 'PC' 
 AND maker NOT IN (SELECT maker FROM Product WHERE type = 'Laptop');
 
+-- Создание дубликатов уже включено в код генерации
+
 -- Нахождение дубликатов
 WITH duplicates AS (
     SELECT *, 
