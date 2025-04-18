@@ -1,0 +1,21 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "91.236.196.30",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "username": "readonly_pet_clinic",
+            "password": "dvGya6ZVNW73",
+            "database": "pet_clinic",
+            "name": "pet_clinic"
+        },
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "database": "${workspaceFolder:Analytics_cafedra}/Module2/task3/database.db",
+            "name": "task3"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}
